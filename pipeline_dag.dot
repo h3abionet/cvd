@@ -1,0 +1,14 @@
+digraph "pipeline_dag" {
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.fromPath"];
+p1 [shape=point];
+p0 -> p1 [label="ch_output_docs"];
+
+p2 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.from"];
+p3 [label="pheno_mapping"];
+p2 -> p3 [label="mapping_files"];
+
+p3 [label="pheno_mapping"];
+p4 [shape=point];
+p3 -> p4 [label="pheno_mapping"];
+
+}

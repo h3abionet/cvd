@@ -56,32 +56,27 @@ if( !(workflow.runName ==~ /[a-z]+_[a-z]+/) ){
 // Stage config files
 ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
 
+params.help = ''
+params.name = ''
 params.outdir ='.'
 params.project_name = ''
 params.hostnames = ''
 
 /*
- * Create a channel for input read files
+ * Check if input files exist in and Create a channel for input files
  */
- // Check if genome exists in the config file
- if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
-     exit 1, "The provided genome '${params.genome}' is not available in the iGenomes file. Currently the available genomes are ${params.genomes.keySet().join(", ")}"
- }
-chips = []
-if(params.chips){
-    params.chips.each{ chip ->
-        chip_name = chip[0]
-        chip_file = chip[1]
-        if (!file(chip_file).isFile()) {
-            System.err.println "|-- ERROR: \"File ${chip_name}: ${chip_file} does not exist  - Check your config.\""
-            exit 1
-        }
-    }
-
+if (!file(params.mapping_file).isFile()) {
+    System.err.println "|-- ERROR: \"File ${params.mapping_file} does not exist  - Check your --mapping_file parameter\""
+    exit 1
+}
+if (!file(params.pheno_file).isFile()) {
+    System.err.println "|-- ERROR: \"File ${params.pheno_file} does not exist  - Check your --pheno_file parameter\""
+    exit 1
 }
 
-mapping_files = Channel.from([[file(params.mapping_file), file(params.pheno_file), file(params.csv_template), file(params.pheno_output)]])
+mapping_files = Channel.from([[file(params.mapping_file), file(params.pheno_file), file(params.pheno_output)]])
 
+println("Mamana")
 
 // Header log info
 log.info nfcoreHeader()
@@ -138,7 +133,7 @@ process pheno_mapping {
     publishDir "${params.outdir}/harmonisez_pheno", mode: 'copy'
 
     input:
-    set file(mapping_file), file(pheno_file), file(csv_template), file(pheno_output) from mapping_files
+    set file(mapping_file), file(pheno_file), file(pheno_output) from mapping_files
 
     output:
     set file(mapping_file) into pheno_mapping
@@ -148,7 +143,6 @@ process pheno_mapping {
     python3 ${workflow.projectDir}/bin/pheno_mapping.py \
         --mapping_file ${mapping_file} \
         --pheno_file ${pheno_file} \
-        --csv_template ${csv_template} \
         --pheno_output ${pheno_output}
     """
 }

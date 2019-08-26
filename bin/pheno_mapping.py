@@ -8,7 +8,6 @@ import pyparsing as pp
 parser = argparse.ArgumentParser()
 parser.add_argument("--mapping_file", default="", help="Mapping file ")
 parser.add_argument("--pheno_file", default="", help="Phenotype file")
-parser.add_argument("--csv_template", default="", help="CSV template file")
 parser.add_argument("--pheno_output", default="", help="Phenotype output file")
 args = parser.parse_args()
 
@@ -127,13 +126,6 @@ def read_mapping(mapping_file):
     print(study_data)
     return study_data ## return variables list as well to use during convertion
 
-def read_csv_template(csv_template):
-    """
-    """
-    with open(csv_template) as data:
-        item = data.readlines()[0]
-    return item.split(',')
-
 def pheno_mapping(pheno_file, mapping_file):
     '''
     '''
@@ -182,25 +174,22 @@ def pheno_mapping(pheno_file, mapping_file):
         # print(datas)
         return datas
 
-def pheno_output(pheno_file, mapping_file, csv_template, pheno_output):
+def pheno_output(pheno_file, mapping_file, pheno_output):
     """
     """
     mapping = pheno_mapping(args.pheno_file, args.mapping_file)
-    csv_template = read_csv_template(args.csv_template)
     output = open(pheno_output, 'w')
-    output.writelines(','.join(csv_template)+'\n')
     for pid in sorted(mapping):
         datas = [pid]
-        for cvs_pheno in csv_template:
-            if cvs_pheno in mapping[pid]:
-                datas.append(mapping[pid][cvs_pheno])
-            else:
-                datas.append('999')
+        if cvs_pheno in mapping[pid]:
+            datas.append(mapping[pid][cvs_pheno])
+        else:
+            datas.append('999')
         output.writelines(','.join(datas)+'\n')
     output.close()
 
 
 if __name__ == '__main__':
     # print(read_mapping(args.mapping_file))
-    pheno_mapping(args.pheno_file, args.mapping_file)
-    # pheno_output(args.pheno_file, args.mapping_file, args.csv_template, args.pheno_output)
+    # pheno_mapping(args.pheno_file, args.mapping_file)
+    pheno_output(args.pheno_file, args.mapping_file, args.pheno_output)

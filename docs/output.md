@@ -1,4 +1,4 @@
-# nf-core/chipfreqs: Output
+<!-- # nf-core/chipfreqs: Output
 
 This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
 
@@ -38,4 +38,4 @@ The pipeline has special steps which allow the software versions used to be repo
 * `Project_multiqc_data/`
   * Directory containing parsed statistics from the different tools used in the pipeline
 
-For more information about how to use MultiQC reports, see [http://multiqc.info](http://multiqc.info)
+For more information about how to use MultiQC reports, see [http://multiqc.info](http://multiqc.info) -->

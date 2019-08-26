@@ -1,11 +1,11 @@
-# nf-core/chipfreqs: Usage
+<!-- # nf-core/chipfreqs: Usage -->
 
-## Table of contents
+<!-- ## Table of contents -->
 
 <!-- Install Atom plugin markdown-toc-auto for this ToC to auto-update on save -->
 <!-- TOC START min:2 max:3 link:true asterisk:true update:true -->
-* [Table of contents](#table-of-contents)
-* [Introduction](#introduction)
+<!-- * [Table of contents](#table-of-contents) -->
+<!-- * [Introduction](#introduction)
 * [Running the pipeline](#running-the-pipeline)
   * [Updating the pipeline](#updating-the-pipeline)
   * [Reproducibility](#reproducibility)
@@ -23,8 +23,8 @@
 * [AWS Batch specific parameters](#aws-batch-specific-parameters)
   * [`--awsqueue`](#--awsqueue)
   * [`--awsregion`](#--awsregion)
-* [Other command line parameters](#other-command-line-parameters)
-  * [`--outdir`](#--outdir)
+* [Other command line parameters](#other-command-line-parameters) -->
+  <!-- * [`--outdir`](#--outdir)
   * [`--email`](#--email)
   * [`-name`](#-name)
   * [`-resume`](#-resume)
@@ -36,22 +36,22 @@
   * [`--max_cpus`](#--max_cpus)
   * [`--plaintext_email`](#--plaintext_email)
   * [`--monochrome_logs`](#--monochrome_logs)
-  * [`--multiqc_config`](#--multiqc_config)
+  * [`--multiqc_config`](#--multiqc_config) -->
 <!-- TOC END -->
 
 
-## Introduction
+<!-- ## Introduction
 Nextflow handles job submissions on SLURM or other environments, and supervises running the jobs. Thus the Nextflow process must run until the pipeline is finished. We recommend that you put the process running in the background through `screen` / `tmux` or similar tool. Alternatively you can run nextflow within a cluster job submitted your job scheduler.
 
 It is recommended to limit the Nextflow Java virtual machines memory. We recommend adding the following line to your environment (typically in `~/.bashrc` or `~./bash_profile`):
 
 ```bash
 NXF_OPTS='-Xms1g -Xmx4g'
-```
+``` -->
 
 <!-- TODO nf-core: Document required command line parameters to run the pipeline-->
 
-## Running the pipeline
+<!-- ## Running the pipeline
 The typical command for running the pipeline is as follows:
 
 ```bash
@@ -104,10 +104,10 @@ If `-profile` is not specified at all the pipeline will be run locally and expec
   * Pulls software from DockerHub: [`nfcore/chipfreqs`](http://hub.docker.com/r/nfcore/chipfreqs/)
 * `test`
   * A profile with a complete configuration for automated testing
-  * Includes links to test data so needs no other parameters
+  * Includes links to test data so needs no other parameters -->
 
 <!-- TODO nf-core: Document required command line parameters -->
-
+<!--
 ### `--reads`
 Use this to specify the location of your input FastQ files. For example:
 
@@ -155,11 +155,11 @@ You can find the keys to specify the genomes in the [iGenomes config file](../co
 
 Note that you can use the same configuration setup to save sets of reference files for your own use, even if they are not part of the iGenomes resource. See the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for instructions on where to save such a file.
 
-The syntax for this reference configuration is as follows:
+The syntax for this reference configuration is as follows: -->
 
 <!-- TODO nf-core: Update reference genome example according to what is needed -->
 
-```nextflow
+<!-- ```nextflow
 params {
   genomes {
     'GRCh37' {
@@ -171,10 +171,10 @@ params {
 ```
 
 <!-- TODO nf-core: Describe reference path flags -->
-### `--fasta`
-If you prefer, you can specify the full path to your reference genome when you run the pipeline:
+<!-- ### `--fasta` -->
+<!-- If you prefer, you can specify the full path to your reference genome when you run the pipeline: -->
 
-```bash
+<!-- ```bash
 --fasta '[path to Fasta reference]'
 ```
 
@@ -201,11 +201,11 @@ The AWS region to run your job in. Default is set to `eu-west-1` but can be adju
 
 Please make sure to also set the `-w/--work-dir` and `--outdir` parameters to a S3 storage bucket of your choice - you'll get an error message notifying you if you didn't.
 
-## Other command line parameters
+## Other command line parameters -->
 
 <!-- TODO nf-core: Describe any other command line flags here -->
 
-### `--outdir`
+<!-- ### `--outdir`
 The output directory where the results will be saved.
 
 ### `--email`
@@ -279,4 +279,4 @@ Set to receive plain-text e-mails instead of HTML formatted.
 Set to disable colourful command line output and live life in monochrome.
 
 ### `--multiqc_config`
-Specify a path to a custom MultiQC configuration file.
+Specify a path to a custom MultiQC configuration file. -->

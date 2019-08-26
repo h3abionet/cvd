@@ -13,16 +13,17 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 
 ## Documentation
-The h3abionet/cvd pipeline comes with documentation about the pipeline, found in the `docs/` directory:
-
+To be done
+<!-- The h3abionet/cvd pipeline comes with documentation about the pipeline, found in the `docs/` directory: -->
+<!--
 1. [Installation](https://nf-co.re/usage/installation)
 2. Pipeline configuration
     * [Local installation](https://nf-co.re/usage/local_installation)
     * [Adding your own system config](https://nf-co.re/usage/adding_own_config)
     * [Reference genomes](https://nf-co.re/usage/reference_genomes)
 3. [Running the pipeline](docs/usage.md)
-4. [Output and how to interpret the results](docs/output.md)
-5. [Troubleshooting](https://nf-co.re/usage/troubleshooting)
+4. [Output and how to interpret the results](docs/output.md) -->
+<!-- 5. [Troubleshooting](https://nf-co.re/usage/troubleshooting) -->
 
 <!-- TODO nf-core: Add a brief overview of what the pipeline does and how it works -->
 

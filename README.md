@@ -1,8 +1,8 @@
-# nf-core/chipfreqs
+# h3abionet/cvd
 
 **Chip frequencies per populations from a VCF file**.
 
-[![Build Status](https://travis-ci.com/nf-core/chipfreqs.svg?branch=master)](https://travis-ci.com/nf-core/chipfreqs)
+[![Build Status](https://travis-ci.com/h3abionet/cvd.svg?branch=master)](https://travis-ci.com/h3abionet/cvd)
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.32.0-brightgreen.svg)](https://www.nextflow.io/)
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
@@ -13,7 +13,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 
 ## Documentation
-The nf-core/chipfreqs pipeline comes with documentation about the pipeline, found in the `docs/` directory:
+The h3abionet/cvd pipeline comes with documentation about the pipeline, found in the `docs/` directory:
 
 1. [Installation](https://nf-co.re/usage/installation)
 2. Pipeline configuration
@@ -27,4 +27,4 @@ The nf-core/chipfreqs pipeline comes with documentation about the pipeline, foun
 <!-- TODO nf-core: Add a brief overview of what the pipeline does and how it works -->
 
 ## Credits
-nf-core/chipfreqs was originally written by Mamana Mbiyavanga.
+h3abionet/cvd was originally written by Mamana Mbiyavanga.

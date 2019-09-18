@@ -95,12 +95,12 @@ summary['Working dir']          = workflow.workDir
 summary['Script dir']           = workflow.projectDir
 summary['User']                 = workflow.userName
 summary['Config Profile']       = workflow.profile
-if(params.config_profile_description) summary['Config Description'] = params.config_profile_description
-if(params.config_profile_contact)     summary['Config Contact']     = params.config_profile_contact
-if(params.config_profile_url)         summary['Config URL']         = params.config_profile_url
-if(params.email) {
-  summary['E-mail Address']  = params.email
-}
+// if(params.config_profile_description) summary['Config Description'] = params.config_profile_description
+// if(params.config_profile_contact)     summary['Config Contact']     = params.config_profile_contact
+// if(params.config_profile_url)         summary['Config URL']         = params.config_profile_url
+// if(params.email) {
+//   // summary['E-mail Address']  = params.email
+// }
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "\033[2m----------------------------------------------------\033[0m"
 

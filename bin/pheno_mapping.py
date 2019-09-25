@@ -30,6 +30,8 @@ def error_message(code, format1='', format2='', format3='', format4='', format5=
         print('{0}\nError: \"Coding \'{3}\' not included in mapping for variable \'{2}\' in record {4}\"{1}\n'.format(CRED, CEND, format1, format2, format3, format4, format5))
     elif code == 6:
         print('{0}\nError: \"Wrong Variable Format {2}\" in \'mapping file {4}\' for record -- {3} {1}\n'.format(CRED, CEND, format1, format2, format3, format4, format5))
+    elif code == 7:
+        print('{0}\nError: \"Wrong format of \'mapping file {2}\' {1}\n'.format(CRED, CEND, format1))
     sys.exit(1)
 
 
@@ -172,25 +174,32 @@ def pheno_mapping(pheno_file, mapping_file):
                     # time.sleep(10)
             datas[record] = new_item
             record += 1
-        # print(datas)
-        return datas
+        if(len(phenos) == 0):
+            error_message(7, mapping_file)
+        return datas,phenos
+
+# nextflow run Projects/cvd/main.nf --mapping_file Projects/cvd/data/AWIGEN/CVD_Data_Mapping_AWIGen_1.csv --pheno_file Projects/cvd/data/AWIGEN/CVD_Dataset_v02.csv  --pheno_output Projects/cvd/data/AWIGEN/Data_mapped.csv 
 
 def pheno_output(pheno_file, mapping_file, pheno_output):
     """
     """
-    mapping = pheno_mapping(args.pheno_file, args.mapping_file)
+    mapping,phenos = pheno_mapping(args.pheno_file, args.mapping_file)
     output = open(pheno_output, 'w')
+    output.writelines(','.join([str(it) for it in phenos])+'\n')
+    print(mapping)
     for pid in sorted(mapping):
-        datas = [pid]
-        if cvs_pheno in mapping[pid]:
-            datas.append(mapping[pid][cvs_pheno])
-        else:
-            datas.append('999')
-        output.writelines(','.join(datas)+'\n')
+        datas = []
+        # datas = [pid]
+        for cvs_pheno in phenos:
+            if cvs_pheno in mapping[pid]:
+                datas.append(mapping[pid][cvs_pheno])
+            # else:
+            #     datas.append('999')
+        output.writelines(','.join([str(it) for it in datas])+'\n')
     output.close()
 
 
 if __name__ == '__main__':
     # print(read_mapping(args.mapping_file))
-    # pheno_mapping(args.pheno_file, args.mapping_file)
+    # print(pheno_mapping(args.pheno_file, args.mapping_file))
     pheno_output(args.pheno_file, args.mapping_file, args.pheno_output)

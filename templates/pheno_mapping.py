@@ -184,7 +184,7 @@ def pheno_mapping(pheno_file, mapping_file):
             error_message(7, mapping_file)
         return datas,phenos
 
-# nextflow run Projects/cvd/main.nf --mapping_file Projects/cvd/data/AWIGEN/CVD_Data_Mapping_AWIG_1.csv --pheno_file Projects/cvd/data/AWIGEN/CVD_Dataset_v02.csv  --pheno_output Projects/cvd/data/AWIGEN/Data_mapped.csv
+# nextflow run /Users/mamana/Projects/cvd/main.nf --pheno_file /Users/mamana/Projects/cvd/data/AWIGEN/CVD_Dataset_v02.csv --mapping_file /Users/mamana/Projects/cvd/data/AWIGEN/CVD_Data_Mapping_AWIG_1.csv --pheno_output /Users/mamana/Projects/cvd/data/AWIGEN/Data_mapped.csv
 
 def pheno_output(pheno_file, mapping_file, pheno_output):
     """
@@ -206,6 +206,4 @@ def pheno_output(pheno_file, mapping_file, pheno_output):
 
 
 if __name__ == '__main__':
-    # print(read_mapping(args.mapping_file))
-    # print(pheno_mapping(args.pheno_file, args.mapping_file))
     pheno_output(args.pheno_file, args.mapping_file, args.pheno_output)

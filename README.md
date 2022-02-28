@@ -1,6 +1,6 @@
 # h3abionet/cvd
 
-**Chip frequencies per populations from a VCF file**.
+**H3Africa phenotype harmonization pipeline**.
 
 [![Build Status](https://travis-ci.com/h3abionet/cvd.svg?branch=master)](https://travis-ci.com/h3abionet/cvd)
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.32.0-brightgreen.svg)](https://www.nextflow.io/)
@@ -13,7 +13,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 
 ## Documentation
-To be done
+This pipeline transforms phenotype data from a given model to another model using a mapping file.
+
 <!-- The h3abionet/cvd pipeline comes with documentation about the pipeline, found in the `docs/` directory: -->
 <!--
 1. [Installation](https://nf-co.re/usage/installation)

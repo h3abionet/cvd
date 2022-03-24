@@ -4,206 +4,419 @@ import argparse,sys
 import csv
 import time
 import pyparsing as pp
+from inspect import currentframe
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--mapping_file", default="", help="Mapping file ")
-parser.add_argument("--pheno_file", default="", help="Phenotype file")
-parser.add_argument("--pheno_output", default="", help="Phenotype output file")
+parser.add_argument("--mapping_file", default="${mapping_file}", help="Mapping file ")
+parser.add_argument("--pheno_file", default="${pheno_file}", help="Phenotype file")
+parser.add_argument(
+    "--pheno_output", default="${pheno_output}", help="Phenotype output file")
 args = parser.parse_args()
 
-CRED = '\033[91m'
-CEND = '\033[0m'
+def get_linenumber():
+    """
+    Print code line in logging
+    """
+    cf = currentframe()
+    return cf.f_back.f_lineno
 
-def error_message(code, format1='', format2='', format3='', format4='', format5=''):
+def isfloat(num):
+    """
+    Check if string is float
+    
+    Args:
+        num (_type_): string
+
+    Returns:
+        _type_: True is float or Flase if not
+    """
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
+    
+def error_message(code, format='', record='', options='', cline='', var='', var1='', format1='', format2='', format3='', format4='', format5='', mapfile='', var_value='', CRED='\033[91m', CEND='\033[0m'):
     """
     Print error message
-    """
-    if code == 1:
-        print('{0}\nError: \"NEW Variable Name\" variable missing for record -- {2} {1}\n'.format(CRED, CEND, format1, format2, format3, format4, format5))
-    elif code == 2:
-        print('{0}\nError: \"Study Variable Format\" variable missing for record -- {2} {1}\n'.format(CRED, CEND, format1, format2, format3, format4, format5))
-    elif code == 3:
-        print('{0}\nError: \"Study Variable Name\" or \"Study Variable Format\" variable missing for record -- {2} {1}\n'.format(CRED, CEND, format1, format2, format3, format4, format5))
-    elif code == 4:
-        print('{0}\nError: \"Wrong option {2}\" for record -- {3} {1}\n'.format(CRED, CEND, format1, format2, format3, format4, format5))
-    elif code == 5:
-        print('{0}\nError: \"Coding \'{3}\' not included in mapping for variable \'{2}\' in record {4}\"{1}\n'.format(CRED, CEND, format1, format2, format3, format4, format5))
-    elif code == 6:
-        print('{0}\nError: \"Wrong Variable Format {2}\" in \'mapping file {4}\' for record -- {3} {1}\n'.format(CRED, CEND, format1, format2, format3, format4, format5))
-    elif code == 7:
-        print('{0}\nError: \"Unrecognised format of \'mapping file {2}\' {1}\n'.format(CRED, CEND, format1))
-    elif code == 8:
-        print('{0}\nError: \"Empty Variable Format {2}\" in \'mapping file {3}\" {1}\n'.format(CRED, CEND, format1, format2, format3, format4, format5))
-    sys.exit(1)
 
+    Args:
+        code (_type_): _description_
+        format (str, optional): _description_. Defaults to ''.
+        record (str, optional): _description_. Defaults to ''.
+        options (str, optional): _description_. Defaults to ''.
+        cline (str, optional): _description_. Defaults to ''.
+        var (str, optional): _description_. Defaults to ''.
+        var1 (str, optional): _description_. Defaults to ''.
+        format1 (str, optional): _description_. Defaults to ''.
+        format2 (str, optional): _description_. Defaults to ''.
+        format3 (str, optional): _description_. Defaults to ''.
+        format4 (str, optional): _description_. Defaults to ''.
+        format5 (str, optional): _description_. Defaults to ''.
+        mapfile (str, optional): _description_. Defaults to ''.
+        var_value (str, optional): _description_. Defaults to ''.
+        CRED (str, optional): _description_. Defaults to '\033[91m'.
+        CEND (str, optional): _description_. Defaults to '\033[0m'.
+    """
+    
+    record = f'{record[:50]} ...'
+    line = f'{CRED}(Code line{CEND} {cline}{CRED}){CEND}'
+
+    msg1 = f'{CRED}\nError: "NEW Variable Name" variable missing on Study Variable{CEND} "{var1}" {CRED}for record --{CEND} "{record}" {line}\n'
+    msg2 = f'{CRED}\nError: "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n'
+    msg3 = f'{CRED}\nError: "Study Variable Name" or "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n'
+    msg4 = f'{CRED}\nError: Wrong option "{options}" for record -- "{record}" {CEND} (Code line {cline})\n'
+    msg5 = f'{CRED}\nError: Coding{CEND} "{var}" {CRED}not included in mapping{CEND} "{options}" {CRED}in record{CEND} "{record}" {CRED}(Code line{CEND} {cline}{CRED}){CEND}\n'
+    msg6 = f'{CRED}\nError: Wrong Variable Format "{format}" in mapping file "{mapfile}" for record -- "{record}" {CEND} (Code line {cline})\n'
+    msg7 = f'{CRED}\nError: Unrecognized format of mapping file "{mapfile}" {CEND} (Code line {cline})\n'
+    msg8 = f'{CRED}\nError: Empty Variable Format {format}" for record -- "{record}" {CEND} (Code line {cline})\n'
+    msg9 = f'{CRED}\nError: Duplicate Study Variable Name "{var}" for record -- "{record}" {CEND} (Code line {cline})\n'
+    msg10 = f'{CRED}\nError: Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n'
+    msg11 = f'{CRED}\nError: Study Variable Name "{var}" not included "NEW to Study Mapping" field for record "{record}" {CEND} (Code line {cline})\n'
+    msg12 = f'{CRED}\nError: Empty "Study Variable Name" for record "{record}" {CEND} (Code line {cline})\n'
+    msg13 = f'{CRED}\nError: Empty "New to Study Mapping" for "{var}" for record "{record}" {CEND} (Code line {cline})\n'
+
+    ### Variable
+    msg15 = f'{CRED}\nError: Wrong Variable{CEND} "{var}" {CRED}type for record --{CEND} "{record}" {line}\n'
+
+    ## No Exit
+    msg101 = f'{CRED}\nError: Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n'
+    msg102 = f'{CRED}\nError: Invalid "New to Study Mapping": "{var}" for record "{record}" {CEND} (Code line {cline})\n'
+    ## Value
+    msg17 = f'{CRED}\nError: Invalid value "{var_value}" for variable "{var}" of type "{format}" for record "{record}" {CEND} (Code line {cline})\n'
+
+    if code == 1:
+        print(msg1)
+    elif code == 2:
+        print(msg2)
+    elif code == 3:
+        print(msg3)
+    elif code == 4:
+        print(msg4)
+    elif code == 5:
+        print(msg5)
+    elif code == 6:
+        print(msg6)
+    elif code == 7:
+        print(msg7)
+    elif code == 8:
+        print(msg8)
+    elif code == 9:
+        print(msg9)
+    elif code == 10:
+        print(msg10)
+    elif code == 11:
+        print(msg11)
+    elif code == 12:
+        print(msg12)
+    elif code == 13:
+        print(msg13)
+    elif code == 15:
+        print(msg15)
+    elif code == 16:
+        print(msg16)
+
+    elif code == 101:
+        print(msg101)
+    elif code == 102:
+        print(msg102)
+    elif code == 17:
+        print(msg17)
+    if code < 100:
+        sys.exit(0)
 
 def read_mapping(mapping_file):
-    '''
-    '''
+    """_summary_
+
+    Args:
+        mapping_file (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     study_data = {}
-    option_formats = ['text', 'single_choice', 'hardcode', 'automated'] ## with formula must be computed last
-    # TODO: format to support date, not_recorded
+    option_formats = ['text', 'integer', 'number', 'single_choice', 'hardcode', 'automated', 'date_y', 'not_recorded'] ## with formula must be computed last
+    mapping_variables = []
     with open(mapping_file, newline='') as csvfile:
-        data = csv.DictReader(csvfile, delimiter=',', quotechar='\"')
-        ## Get all Variable formats
-        data_formats = {}
+        data = csv.DictReader(csvfile, delimiter=',', quotechar='"')
         for item in data:
-            item = dict(item)
-            if 'Study Variable Format' in item:
-                format = item['Study Variable Format']
-                if format != '':
-                    if format not in data_formats:
-                        data_formats[format] = []
-                    data_formats[format].append(item)
-                elif format == '':
-                    error_message(8, format, mapping_file)
-                elif format not in option_formats:
-                    error_message(6, format)
-
-
-        ## Process non formula variables first
-        for format in option_formats:
-            if format in data_formats:
-                for item in data_formats[format]:
-                    # print(item)
-                    item_str = ', '.join([':'.join([key,item[key]]) for key in item if key != None and item[key] != None]) # to use for error logging
-                    if 'Study Variable Name' in item and 'Study Variable Format' in item:
-                        ## Get old study variable
-                        study_var = item['Study Variable Name'] #TODO check this is not empty
-                        study_option = item['Study Variable Coding']
-                        var_format = item['Study Variable Format']
-                        if item['Study Variable Format'] != '':
-                            if var_format == 'text': ## Case 1
-                                study_data[study_var] = {}
-                                study_options = study_option
-                            elif var_format == 'single_choice': # Case 2: multiple options field
-                                study_options = {}
-                                # print(study_option)
-                                for it in [it for it in study_option.split("|")]:
-                                    newStr = pp.commaSeparatedList.parseString(it).asList() # in case there is a comma in an option
-                                    try:
-                                        study_options[newStr[0]] = newStr[1].replace('\'','')
-                                    except:
-                                        error_message(4, study_option, item_str)
-                            elif var_format in ['automated', 'hardcode']: ## Case 8: automated
-                                study_data[study_var] = {}
-                                study_options = ''
-                            else:
-                                error_message(6, var_format, item_str, mapping_file)
-                            study_data[study_var] = {'study_options':study_options}
-
-                            ## Get new CVD variable and options
-                            if 'NEW Variable Name' in item:
-                                if item['NEW Variable Name'] != '':
-                                    new_var = item['NEW Variable Name']
-                                    new_option = item['NEW to Study Mapping']
-                                    new_coding = item['NEW Variable Coding']
-                                    study_data[study_var]['new_variable'] = new_var
-                                     # in case there is a comma in an option
-                                    if var_format == 'text': ## Case 1: text
-                                        new_mapping = new_option
-                                        study_data[study_var]['new_mapping'] = new_mapping
-                                    elif var_format == 'single_choice': # Case 2: multiple options field
-                                        new_mapping = {}
-                                        for option in [it.split('=') for it in new_option.split("|")]:
-                                            option = [opt.strip() for opt in option] # remove whitespace
-                                            key = option[0]
-                                            vals = option[1].split(',')
-                                            if len(vals) == 1:
-                                                new_mapping[vals[0]] = key
-                                            else:
-                                                for val in vals:
-                                                    new_mapping[val.strip()] = key.strip()
-                                    else:
-                                        error_message(6, var_format, item_str, mapping_file)
-                                    # elif var_format == 'automated': ## Case 9: automated
-                                    #     if '+' in new_option:
-                                    #         options = [it.strip() for it in new_option.split('=')[1].replace('\'','').split('+')]
-                                    #     new_mapping = new_option
-                                    # elif new_coding == '': # Case 1: free text field
-                                    #     new_mapping = {}
-                                    study_data[study_var]['new_mapping'] = new_mapping
-                                    study_data[study_var]['new_format'] = var_format
-                                else:
-                                    error_message(1, item_str)
-                            else:
-                                error_message(1, item_str)
-                        else:
-                            error_message(2, item_str)
+            # print(item)
+            item = {k.lower().strip(): v.strip() for k, v in item.items()}
+            item_str = ', '.join([':'.join([key, item[key]]) for key in item if key != None and item[key] != None]) # to use for error logging
+            if 'study variable name' not in item or 'study variable format' not in item:
+                error_message(code = 3, record = item_str)
+            ## Get variables
+            study_var = item['study variable name'] #TODO check this is not empty
+            study_options = item['study variable coding']
+            study_format = item['study variable format']
+            new_var = item['new variable name']
+            new_options = item['new variable coding']
+            new_format = item['new variable format']
+            new_to_study_mapping = item['new to study mapping']
+            
+            if item['study variable format'] != '':
+                if study_format in [ 'automated', 'hardcode' ] and study_var == '':
+                    study_var = new_var
+                    if study_var not in study_data:
+                        study_data[study_var] = {}
                     else:
-                        error_message(3, item_str)
-    # print(study_data)
-    return study_data ## return variables list as well to use during convertion
+                        error_message(code=9, record = item_str, var=study_var, cline=(get_linenumber())) 
+                elif study_format in ['not_recorded']:
+                    study_var = new_var
+                    if study_var not in study_data:
+                        study_data[study_var] = {}
+                    else:
+                        error_message(code=9, record=item_str, var=study_var, cline=(get_linenumber()))
+                elif study_format in ['text', 'date_y', 'integer', 'number', 'single_choice']: ## Can not be empty
+                    if study_var == '':
+                        error_message(code=8, record=item_str, cline=(get_linenumber()))
+                    if study_var not in study_data:
+                        study_data[study_var] = {}
+                    else:
+                        error_message(code=9, record=item_str, var=study_var, cline=(get_linenumber()))
+                else:
+                    error_message(
+                        code=6, format=study_format, record=item_str, cline=(get_linenumber()))
+                        
+                if study_format in ['automated', 'hardcode', 'text', 'date_y', 'integer', 'number', 'single_choice', 'not_recorded']:
+                    study_data[study_var]['study_var'] = study_var
+                    study_data[study_var]['study_options'] = study_options
+                    study_data[study_var]['study_format'] = study_format
+                    study_data[study_var]['new_var'] = new_var
+                    study_data[study_var]['new_options'] = new_options
+                    study_data[study_var]['new_format'] = new_format
+                    study_data[study_var]['new_to_study_mapping'] = new_to_study_mapping
+                    
+                    if study_var not in mapping_variables:  # Store variable to keep order
+                        mapping_variables.append(study_var)
+                    
+                if study_format in ['text', 'number', 'integer', 'date_y', 'single_choice']:
+                    if new_to_study_mapping == '':
+                        error_message(code=13, var=study_var, options=new_options,
+                                      record=item_str, cline=(get_linenumber()))
+                    new_options_ = {}
+                    try:
+                        for it in [it for it in new_to_study_mapping.split("|")]:
+                            newStr = it.split('=')
+                            if len(newStr) < 1:
+                                error_message(
+                                    code=4, options=new_options, record=item_str, cline=(get_linenumber()))
+                            try:
+                                new_options_[
+                                    newStr[0].strip()] = newStr[1].strip().replace('\'', '')
+                            except:
+                                error_message(code=4, options=new_options, record=item_str, cline=(get_linenumber()))
+                    except:
+                        error_message(code=13, var=new_to_study_mapping,
+                                      record=item_str, cline=(get_linenumber()))
+                    study_data[study_var]['new_to_study_mapping'] = new_options_
+    # return variables list as well to use during convertion
+    return study_data, mapping_variables
+
 
 def pheno_mapping(pheno_file, mapping_file):
-    '''
-    '''
-    datas = {}
-    phenos = []
-    mapping = read_mapping(mapping_file)
-    # print(mapping)
-    with open(pheno_file, newline='') as csvfile:
-        data = csv.DictReader(csvfile, delimiter=',', quotechar='\"')
-        record = 1
-        # print(list(data))
-        for item in data:
-            item = dict(item)
-            item_str = ', '.join([':'.join([key,item[key]]) for key in item]) # to use for error logging
-            new_item = {}
-            # print("-------0",item)
-            for var in item:
-                if var in mapping and 'new_mapping' in mapping[var] and 'new_variable' in mapping[var] and 'new_format' in mapping[var]:
-                    new_var = mapping[var]['new_variable']
-                    var_format =  mapping[var]['new_format']
-                    # print("---------",var, var_format)
-                    if new_var not in phenos:
-                        phenos.append(new_var)
-                    if var_format == 'text': ## Case 1
-                        # print("-------1",item)
-                        new_item[new_var] = item[var]
-                    elif var_format == 'single_choice': ## Case 2
-                            # print("-------2",item)
-                            # print(item[var], mapping[var])
-                            if item[var] in mapping[var]['new_mapping'] or item[var] == '':
-                                new_item[new_var] = item[var]
-                                if item[var] != '':
-                                    new_item[new_var] = mapping[var]['new_mapping'][item[var]]
-                                else:
-                                    new_item[new_var] = '999'
-                            else:
-                                error_message(5, var, item[var], item_str)
-                    else:
-                        print(var, var_format)
-                        # print('mamana')
-                        time.sleep(10)
-                    # print("-------FINAL",[item])
-                    # time.sleep(10)
-            datas[record] = new_item
-            record += 1
-        if(len(phenos) == 0):
-            error_message(7, mapping_file)
-        return datas,phenos
+    """_summary_
 
-# nextflow run /Users/mamana/Projects/cvd/main.nf --pheno_file /Users/mamana/Projects/cvd/data/AWIGEN/CVD_Dataset_v02.csv --mapping_file /Users/mamana/Projects/cvd/data/AWIGEN/CVD_Data_Mapping_AWIG_1.csv --pheno_output /Users/mamana/Projects/cvd/data/AWIGEN/Data_mapped.csv
+    Args:
+        pheno_file (_type_): _description_
+        mapping_file (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    datas = {}
+    variables = []
+    mapping,mapping_variables = read_mapping(mapping_file)
+    values = {}
+    
+    with open(pheno_file, newline='') as csvfile:
+        data = csv.DictReader(csvfile, delimiter=';', quotechar='\"')
+        record = 1
+        new_records = {}
+        phenos_1 = []
+        phenos_2 = []
+        
+        for item in data:
+            item = {k.lower().strip(): v.strip() for k, v in item.items()}
+            item_str = ', '.join([':'.join([key, item[key]]) for key in item])  # Used for error logging
+            new_item = {}
+            
+            ## Write records
+            for var in item:
+                if var in mapping_variables:
+                    if var in mapping and 'new_to_study_mapping' in mapping[var] and 'new_var' in mapping[var] and 'new_format' in mapping[var]:
+                        var_format = mapping[var]['study_format']
+                        new_var = mapping[var]['new_var']
+                        new_format = mapping[var]['new_format']
+                        new_to_study_mapping = mapping[var]['new_to_study_mapping']
+                        study_value = item[var]
+                        
+                        if new_var == '':
+                            error_message(code=1, var=new_var, var1=var, record=item_str, cline=(get_linenumber()))
+                        
+                        if var_format in ['text', 'number', 'integer', 'date_y', 'single_choice']:
+                            if new_to_study_mapping == '':
+                                error_message(code=13, var=var, record=item_str, cline=(get_linenumber()))
+                            if new_var not in new_to_study_mapping:
+                                error_message(
+                                    code=11, var=var, record=item_str, cline=(get_linenumber()))
+                            if new_to_study_mapping[new_var.strip().lower()] != var.strip().lower():
+                                error_message( code=11, var=var, record=item_str, cline=(get_linenumber()))
+                            if new_var not in phenos_2:  # Store variable to keep order
+                                phenos_2.append(new_var)
+                        
+                        if var_format == 'text':  # Case 1
+                            if new_var in new_to_study_mapping and (new_format == 'text' or new_format == 'single_choice'): 
+                                value = ''
+                                if new_format == 'text': ## text -> text
+                                    # Check that mapping of new variable  = study variable
+                                    if study_value != '':
+                                        value = study_value
+                                    else:
+                                        not_found = True  # To check in value found in new mapping
+                                        for new_value in new_to_study_mapping:
+                                            if new_to_study_mapping[new_value] == '': ## e.g. 999=''
+                                                value = new_value
+                                                not_found = False
+                                        if not_found:
+                                            error_message(code=5, var=study_value, options=new_to_study_mapping,record=item_str, cline=(get_linenumber()))
+                                elif new_format == 'single_choice':  # text -> single_choice
+                                    not_found = True  # To check in value found in new mapping
+                                    for new_value in new_to_study_mapping:
+                                        # e.g. South Africa = South_Africa or 999=''
+                                        if new_to_study_mapping[new_value].strip().lower() == study_value.strip().lower():
+                                            value = new_value
+                                            not_found = False
+                                    if not_found:
+                                        error_message(code=5, var=study_value, options=new_to_study_mapping,
+                                                        record=item_str, cline=(get_linenumber()))
+                                else:
+                                    print(new_format, new_to_study_mapping, var, new_var)
+                            else:
+                                error_message(code=11, var=var, record=item_str, cline=(get_linenumber()))
+                                                    
+                        elif var_format == 'number':
+                            if new_format == 'number':  # number -> number
+                                # Check that mapping of new variable  = study variable
+                                if study_value != '':
+                                    value = str(study_value)
+                                    if not isfloat(value): ## Check if not float
+                                        error_message(code=16, var=var, var_value=value, format=new_format, options=new_to_study_mapping, record=item_str, cline=(get_linenumber()))
+                                else:
+                                    not_found = True  # To check in value found in new mapping
+                                    for new_value in new_to_study_mapping:
+                                        if new_to_study_mapping[new_value] == '':  # e.g. 999=''
+                                            value = new_value
+                                            not_found = False
+                                    if not_found:
+                                        error_message(code=5, var=study_value, options=new_to_study_mapping,record=item_str, cline=(get_linenumber()))
+                            else:
+                                error_message(
+                                    code=11, var=var, record=item_str, cline=(get_linenumber()))
+                                                    
+                        elif var_format in ['integer', 'date_y']:
+                            if new_format == 'integer':  # integer, date_y -> integer
+                                # Check that mapping of new variable  = study variable
+                                if study_value != '':
+                                    value = str(study_value)
+                                    if not value.isdigit():  # check if value is number
+                                        error_message(code=17, var=var, var_value=value, format=new_format, options=new_to_study_mapping, record=item_str, cline=(get_linenumber()))
+                                else:
+                                    not_found = True  # To check in value found in new mapping
+                                    for new_value in new_to_study_mapping:
+                                        if new_to_study_mapping[new_value] == '':  # e.g. 999=''
+                                            value = new_value
+                                            not_found = False
+                                    if not_found:
+                                        error_message(code=5, var=study_value, options=new_to_study_mapping,                                                       record=item_str, cline=(get_linenumber()))
+                            else:
+                                error_message(
+                                    code=11, var=var, record=item_str, cline=(get_linenumber()))
+                        
+                        elif var_format == 'single_choice':  # Case 
+                            if new_var in new_to_study_mapping and new_format == 'single_choice':  # single_choice -> single_choice
+                                value = ''
+                                not_found = True  # To check in value found in new mapping
+                                for new_value in new_to_study_mapping:
+                                    # e.g. South Africa = South_Africa or 999=''
+                                    if study_value.strip().lower() in new_to_study_mapping[new_value].strip().lower():
+                                        value = new_value
+                                        not_found = False
+                                        continue
+                                if not_found:
+                                    error_message(code=5, var=study_value, options=new_to_study_mapping,
+                                                    record=item_str, cline=(get_linenumber()))
+                            else:
+                                error_message(
+                                    code=11, var=var, record=item_str, cline=(get_linenumber()))
+
+                        if var_format in ['text', 'number', 'integer', 'date_y', 'single_choice']:
+                            globals()[new_var] = value
+                            new_item[new_var] = value
+                            # if 'record_id' in new_var:
+                            values[new_var] = value
+                        
+                    else:
+                        error_message(code=10, var=var,
+                                    record=item_str, cline=(get_linenumber()))
+                else:
+                    error_message(code=101, var=var,
+                                  record=item_str, cline=(get_linenumber()))            
+            ### Write automated, hardcode records
+            for var in mapping_variables:
+                if var in mapping:
+                    study_format = mapping[var]['study_format']
+                    study_var = mapping[var]['study_var']
+                    new_var = mapping[var]['new_var']
+                    new_to_study_mapping = mapping[var]['new_to_study_mapping']
+                    if study_format in ['automated', 'hardcode']:  # Case
+                        ## Store variable to keep order
+                        if study_var not in phenos_1:
+                            phenos_1.append(study_var)
+                        if new_to_study_mapping == '':
+                            error_message(code=8, format=var_format,record=item_str, cline=(get_linenumber()))
+                        elif study_var in new_to_study_mapping:
+                            var_ = [it.strip()
+                                    for it in new_to_study_mapping.split('=')]
+                            if new_var == var_[0].strip():
+                                value = var_[1]
+                                if study_format == 'hardcode':
+                                    value = value.replace('\'', '')
+                                if '{' in value and '}' in value:
+                                    value = value.format(pid=values['pid'])
+                                new_item[new_var] = value
+                            else:
+                                error_message(
+                                    code=11, var=study_var, record=item_str, cline=(get_linenumber()))
+                        else:
+                            error_message(
+                                code=11, var=study_var, record=item_str, cline=(get_linenumber()))
+                else:
+                    error_message(code=11, var=study_var,
+                                  record=item_str, cline=(get_linenumber()))
+                    
+            new_records[new_item['record_id']] = new_item
+            
+        variables = phenos_1 + phenos_2
+                
+    return new_records, variables
+
 
 def pheno_output(pheno_file, mapping_file, pheno_output):
     """
     """
-    mapping,phenos = pheno_mapping(args.pheno_file, args.mapping_file)
+    mapping, phenos = pheno_mapping(pheno_file, mapping_file)
     output = open(pheno_output, 'w')
-    output.writelines(','.join([str(it) for it in phenos])+'\n')
-    print(mapping)
+    output.writelines(','.join([str(it) for it in phenos])+'\\n')
     for pid in sorted(mapping):
         datas = []
-        # datas = [pid]
         for cvs_pheno in phenos:
             if cvs_pheno in mapping[pid]:
                 datas.append(mapping[pid][cvs_pheno])
-            # else:
-            #     datas.append('999')
-        output.writelines(','.join([str(it) for it in datas])+'\n')
+        output.writelines(','.join([str(it) for it in datas])+'\\n')
     output.close()
 
+## TODO check duplicate variable in data sheet
 
 if __name__ == '__main__':
     pheno_output(args.pheno_file, args.mapping_file, args.pheno_output)

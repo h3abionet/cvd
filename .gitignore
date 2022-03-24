@@ -10,30 +10,7 @@ ILIFU/
 execution_trace (1).txt
 execution_trace.txt
 execution_trace.txt.1
+.history/
 .gitignore
-.gitignore
-.gitignore
-LICENSE (1)
-nextflow (1).config
-README (1).md
-.history/.gitignore_20190719185947
-.history/.gitignore_20220228122239
-.history/.gitignore_20220228122242
-.history/.gitignore_20220228122248
-.history/templates/pheno_mapping_20220228113120.py
-.history/templates/pheno_mapping_20220228113404.py
-.history/templates/pheno_mapping_20220228113407.py
-.history/templates/pheno_mapping_20220228113408.py
-.history/templates/pheno_mapping_20220228113411.py
-.history/templates/pheno_mapping_20220228113413.py
-.history/templates/pheno_mapping_20220228113423.py
-.history/templates/pheno_mapping_20220228113445.py
-.history/templates/pheno_mapping_20220228113450.py
-.history/templates/pheno_mapping_20220228113455.py
-.history/templates/pheno_mapping_20220228113502.py
-.history/templates/pheno_mapping_20220228114329.py
-.history/templates/pheno_mapping_20220228114348.py
-.history/.gitignore_20220228123010
-bin/pheno_mapping.py
-.history/.gitignore_20220228123017
-.gitignore
+assets
+cvd_data/

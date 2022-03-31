@@ -14,8 +14,10 @@ parser.add_argument(
 args = parser.parse_args()
 
 def get_linenumber():
-    """
-    Print code line in logging
+    """Print code line in logging
+
+    Returns:
+        _type_: _description_
     """
     cf = currentframe()
     return cf.f_back.f_lineno
@@ -36,9 +38,8 @@ def isfloat(num):
     except ValueError:
         return False
     
-def error_message(code, format='', record='', options='', cline='', var='', var1='', format1='', format2='', format3='', format4='', format5='', mapfile='', var_value='', CRED='\033[91m', CEND='\033[0m'):
-    """
-    Print error message
+def error_message(code, format='', record='', options='', cline='', var='', var1='', format1='', format2='', format3='', format4='', format5='', mapfile='', var_value='', dline='', nfields='', nfields_1='', CRED='\033[91m', CEND='\033[0m'):
+    """Print error message
 
     Args:
         code (_type_): _description_
@@ -55,6 +56,9 @@ def error_message(code, format='', record='', options='', cline='', var='', var1
         format5 (str, optional): _description_. Defaults to ''.
         mapfile (str, optional): _description_. Defaults to ''.
         var_value (str, optional): _description_. Defaults to ''.
+        dline (str, optional): _description_. Defaults to ''.
+        nfields (str, optional): _description_. Defaults to ''.
+        nfields_1 (str, optional): _description_. Defaults to ''.
         CRED (str, optional): _description_. Defaults to '\033[91m'.
         CEND (str, optional): _description_. Defaults to '\033[0m'.
     """
@@ -62,69 +66,45 @@ def error_message(code, format='', record='', options='', cline='', var='', var1
     record = f'{record[:50]} ...'
     line = f'{CRED}(Code line{CEND} {cline}{CRED}){CEND}'
 
-    msg1 = f'{CRED}\nError: "NEW Variable Name" variable missing on Study Variable{CEND} "{var1}" {CRED}for record --{CEND} "{record}" {line}\n'
-    msg2 = f'{CRED}\nError: "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n'
-    msg3 = f'{CRED}\nError: "Study Variable Name" or "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n'
-    msg4 = f'{CRED}\nError: Wrong option "{options}" for record -- "{record}" {CEND} (Code line {cline})\n'
-    msg5 = f'{CRED}\nError: Coding{CEND} "{var}" {CRED}not included in mapping{CEND} "{options}" {CRED}in record{CEND} "{record}" {CRED}(Code line{CEND} {cline}{CRED}){CEND}\n'
-    msg6 = f'{CRED}\nError: Wrong Variable Format "{format}" in mapping file "{mapfile}" for record -- "{record}" {CEND} (Code line {cline})\n'
-    msg7 = f'{CRED}\nError: Unrecognized format of mapping file "{mapfile}" {CEND} (Code line {cline})\n'
-    msg8 = f'{CRED}\nError: Empty Variable Format {format}" for record -- "{record}" {CEND} (Code line {cline})\n'
-    msg9 = f'{CRED}\nError: Duplicate Study Variable Name "{var}" for record -- "{record}" {CEND} (Code line {cline})\n'
-    msg10 = f'{CRED}\nError: Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n'
-    msg11 = f'{CRED}\nError: Study Variable Name "{var}" not included "NEW to Study Mapping" field for record "{record}" {CEND} (Code line {cline})\n'
-    msg12 = f'{CRED}\nError: Empty "Study Variable Name" for record "{record}" {CEND} (Code line {cline})\n'
-    msg13 = f'{CRED}\nError: Empty "New to Study Mapping" for "{var}" for record "{record}" {CEND} (Code line {cline})\n'
+    ## Mapping file
+    message = {
+        18: f'{CRED}\nError: Incosistent number of fields ({nfields_1} vs {nfields} expected) for Study Variable "{var}" and New Variable "{var1}" record -- "{record}" {CEND} (Data line {dline}, Code line {cline})\n',
+        4: f'{CRED}\nError: Wrong option "{options}" for record -- "{record}" {CEND} (Code line {cline})\n',
+        ### Format
+        8: f'{CRED}\nError: Empty Variable Format "{format}" for Study Variable "{var}" and New Variable "{var1}" record -- "{record}" {CEND} (Data line {dline}, Code line {cline})\n',
+        9: f'{CRED}\nError: Duplicate Study Variable Name "{var}" for record -- "{record}" {CEND} (Code line {cline})\n',
+        1: f'{CRED}\nError: "NEW Variable Name" variable missing on Study Variable{CEND} "{var1}" {CRED}for record --{CEND} "{record}" {line}\n',
+        2: f'{CRED}\nError: "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n',
+        3: f'{CRED}\nError: "Study Variable Name" or "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n',
+        5: f'{CRED}\nError: Coding{CEND} "{var}" {CRED}not included in mapping{CEND} "{options}" {CRED}in record{CEND} "{record}" {CRED}(Code line{CEND} {cline}{CRED}){CEND}\n',
+        6: f'{CRED}\nError: Wrong Variable Format "{format}" in mapping file "{mapfile}" for record -- "{record}" {CEND} (Code line {cline})\n',
+        7: f'{CRED}\nError: Unrecognized format of mapping file "{mapfile}" {CEND} (Code line {cline})\n',
+        
+        
+        10: f'{CRED}\nError: Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n',
+        11: f'{CRED}\nError: Study Variable Name "{var}" not included "NEW to Study Mapping" field for record "{record}" {CEND} (Code line {cline})\n',
+        12: f'{CRED}\nError: Empty "Study Variable Name" for record "{record}" {CEND} (Code line {cline})\n',
+        13: f'{CRED}\nError: Empty "New to Study Mapping" for "{var}" for record "{record}" {CEND} (Code line {cline})\n',
 
-    ### Variable
-    msg15 = f'{CRED}\nError: Wrong Variable{CEND} "{var}" {CRED}type for record --{CEND} "{record}" {line}\n'
+        ### Variable
+        15: f'{CRED}\nError: Wrong Variable{CEND} "{var}" {CRED}type for record --{CEND} "{record}" {line}\n',
 
-    ## No Exit
-    msg101 = f'{CRED}\nError: Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n'
-    msg102 = f'{CRED}\nError: Invalid "New to Study Mapping": "{var}" for record "{record}" {CEND} (Code line {cline})\n'
-    ## Value
-    msg17 = f'{CRED}\nError: Invalid value "{var_value}" for variable "{var}" of type "{format}" for record "{record}" {CEND} (Code line {cline})\n'
-
-    if code == 1:
-        print(msg1)
-    elif code == 2:
-        print(msg2)
-    elif code == 3:
-        print(msg3)
-    elif code == 4:
-        print(msg4)
-    elif code == 5:
-        print(msg5)
-    elif code == 6:
-        print(msg6)
-    elif code == 7:
-        print(msg7)
-    elif code == 8:
-        print(msg8)
-    elif code == 9:
-        print(msg9)
-    elif code == 10:
-        print(msg10)
-    elif code == 11:
-        print(msg11)
-    elif code == 12:
-        print(msg12)
-    elif code == 13:
-        print(msg13)
-    elif code == 15:
-        print(msg15)
-    elif code == 16:
-        print(msg16)
-
-    elif code == 101:
-        print(msg101)
-    elif code == 102:
-        print(msg102)
-    elif code == 17:
-        print(msg17)
-    if code < 100:
-        sys.exit(0)
-
+        ## No Exit
+        101: f'{CRED}\nError: Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n',
+        102: f'{CRED}\nError: Invalid "New to Study Mapping": "{var}" for record "{record}" {CEND} (Code line {cline})\n',
+        ## Value
+        17: f'{CRED}\nError: Invalid value "{var_value}" for variable "{var}" of type "{format}" for record "{record}" {CEND} (Code line {cline})\n',
+    }
+    
+    ## print error message
+    try:
+        print(message[code])
+    except KeyError:
+        print()
+    finally:
+        if code < 100:
+            sys.exit(0)
+    
 def read_mapping(mapping_file):
     """_summary_
 
@@ -140,11 +120,16 @@ def read_mapping(mapping_file):
     with open(mapping_file, newline='') as csvfile:
         data = csv.DictReader(csvfile, delimiter=',', quotechar='"')
         for item in data:
-            # print(item)
-            item = {k.lower().strip(): v.strip() for k, v in item.items()}
+            # print(len(item), item)
+            item = {k.lower().strip(): v.strip() for k, v in item.items() if k!='' and k!=None}
             item_str = ', '.join([':'.join([key, item[key]]) for key in item if key != None and item[key] != None]) # to use for error logging
-            if 'study variable name' not in item or 'study variable format' not in item:
-                error_message(code = 3, record = item_str)
+            if 'study variable name' in item and 'study variable format' in item and 'new variable name' in item and 'new variable format' in item and 'new to study mapping' in item:
+                ## Get expected size for record
+                nfields = len(item)
+            else:
+                error_message(code=3, record=item_str,
+                              cline=(get_linenumber()))
+
             ## Get variables
             study_var = item['study variable name'] #TODO check this is not empty
             study_options = item['study variable coding']
@@ -153,6 +138,14 @@ def read_mapping(mapping_file):
             new_options = item['new variable coding']
             new_format = item['new variable format']
             new_to_study_mapping = item['new to study mapping']
+            
+            ## Check that size of this record is correct
+            nfields_1 = len(item)
+            print(nfields, nfields_1, item)
+            if nfields_1 != nfields:
+                print("Code8")
+                error_message(code=18, record=item_str,
+                              nfields_1=nfields_1, nfields=nfields, var=study_var, var1=new_var, cline=(get_linenumber()))
             
             if item['study variable format'] != '':
                 if study_format in [ 'automated', 'hardcode' ] and study_var == '':
@@ -169,7 +162,7 @@ def read_mapping(mapping_file):
                         error_message(code=9, record=item_str, var=study_var, cline=(get_linenumber()))
                 elif study_format in ['text', 'date_y', 'integer', 'number', 'single_choice']: ## Can not be empty
                     if study_var == '':
-                        error_message(code=8, record=item_str, cline=(get_linenumber()))
+                        error_message(code=8, var=study_var, var1=new_var, record=item_str, cline=(get_linenumber()))
                     if study_var not in study_data:
                         study_data[study_var] = {}
                     else:
@@ -374,7 +367,7 @@ def pheno_mapping(pheno_file, mapping_file):
                         if study_var not in phenos_1:
                             phenos_1.append(study_var)
                         if new_to_study_mapping == '':
-                            error_message(code=8, format=var_format,record=item_str, cline=(get_linenumber()))
+                            error_message(code=8, format=var_format, var=study_var, var1=new_var, record=item_str, cline=(get_linenumber()))
                         elif study_var in new_to_study_mapping:
                             var_ = [it.strip()
                                     for it in new_to_study_mapping.split('=')]
@@ -405,14 +398,15 @@ def pheno_mapping(pheno_file, mapping_file):
 def pheno_output(pheno_file, mapping_file, pheno_output):
     """
     """
-    mapping, phenos = pheno_mapping(pheno_file, mapping_file)
+    new_records, phenos = pheno_mapping(pheno_file, mapping_file)
+    print(new_records)
     output = open(pheno_output, 'w')
     output.writelines(','.join([str(it) for it in phenos])+'\n')
-    for pid in sorted(mapping):
+    for pid in sorted(new_records):
         datas = []
         for cvs_pheno in phenos:
-            if cvs_pheno in mapping[pid]:
-                datas.append(mapping[pid][cvs_pheno])
+            if cvs_pheno in new_records[pid]:
+                datas.append(new_records[pid][cvs_pheno])
         output.writelines(','.join([str(it) for it in datas])+'\n')
     output.close()
 
@@ -420,3 +414,5 @@ def pheno_output(pheno_file, mapping_file, pheno_output):
 
 if __name__ == '__main__':
     pheno_output(args.pheno_file, args.mapping_file, args.pheno_output)
+
+# %%

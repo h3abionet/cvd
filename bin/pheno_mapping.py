@@ -7,10 +7,10 @@ import pyparsing as pp
 from inspect import currentframe
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--mapping_file", default="${mapping_file}", help="Mapping file ")
-parser.add_argument("--pheno_file", default="${pheno_file}", help="Phenotype file")
+parser.add_argument("--mapping_file", default="", help="Mapping file ")
+parser.add_argument("--pheno_file", default="", help="Phenotype file")
 parser.add_argument(
-    "--pheno_output", default="${pheno_output}", help="Phenotype output file")
+    "--pheno_output", default="", help="Phenotype output file")
 args = parser.parse_args()
 
 def get_linenumber():
@@ -118,7 +118,7 @@ def read_mapping(mapping_file):
     option_formats = ['text', 'integer', 'number', 'single_choice', 'hardcode', 'automated', 'date_y', 'not_recorded'] ## with formula must be computed last
     mapping_variables = []
     with open(mapping_file, newline='') as csvfile:
-        data = csv.DictReader(csvfile, delimiter=',', quotechar='"')
+        data = csv.DictReader(csvfile, delimiter=';', quotechar='"')
         for item in data:
             # print(len(item), item)
             item = {k.lower().strip(): v.strip() for k, v in item.items() if k!='' and k!=None}

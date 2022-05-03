@@ -40,17 +40,34 @@ def check_files(file_list) {
 
 process pheno_mapping {
     tag "pheno_mapping"
-    // publishDir "${params.outdir}/harmonisez_pheno", mode: 'copy'
+    publishDir "${params.outdir}/harmonised_pheno", mode: 'copy'
 
     input:
         tuple file(mapping_file), file(pheno_file), val(pheno_output)
 
     output:
-        tuple file(mapping_file)
+        tuple file(pheno_output)
     
     script:
         """
         pheno_mapping.py --pheno_file ${pheno_file} --mapping_file ${mapping_file} --pheno_output ${pheno_output} 
+        """
+}
+
+process generate_mapping {
+    tag "generate_mapping"
+    publishDir "${params.outdir}/harmonised_pheno", mode: 'copy'
+
+    input:
+        tuple file(json_file), file(out_file)
+
+    output:
+        tuple file(mapping_file)
+    
+    script:
+        mapping_file = "${out_file}_mapping_file.xlsx"
+        """
+        generate_mapping.py --json_file ${json_file} --mapping_file ${mapping_file}
         """
 }
 
@@ -62,8 +79,16 @@ workflow{
         exit 0
     }
 
-    check_files( [file(params.mapping_file), file(params.pheno_file)] )
+    // Generate mapping file from JSON
+    if(params.gen_mapping){
+        check_files( [ file(params.json_file) ] )
+        generate_mapping(Channel.from([[ file(params.json_file), file(params.mapping_file) ]]))
+    }
 
-    pheno_mapping(Channel.from([[file(params.mapping_file), file(params.pheno_file), params.pheno_output]])).view()
+    // Harmonise data based on mapping file
+    if(params.harm){
+        check_files( [file(params.mapping_file), file(params.pheno_file)] )
+        pheno_mapping(Channel.from([[file(params.mapping_file), file(params.pheno_file), params.pheno_output]])).view()
+    }
 
 }

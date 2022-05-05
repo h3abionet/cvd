@@ -395,7 +395,7 @@ def pheno_mapping(pheno_file, mapping_file):
     return new_records, variables
 
 
-def pheno_output(pheno_file, mapping_file, pheno_output):
+def main(pheno_file, mapping_file, pheno_output):
     """
     """
     new_records, phenos = pheno_mapping(pheno_file, mapping_file)
@@ -413,6 +413,6 @@ def pheno_output(pheno_file, mapping_file, pheno_output):
 ## TODO check duplicate variable in data sheet
 
 if __name__ == '__main__':
-    pheno_output(args.pheno_file, args.mapping_file, args.pheno_output)
+    main(args.pheno_file, args.mapping_file, args.pheno_output)
 
 # %%

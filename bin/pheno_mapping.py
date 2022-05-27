@@ -68,30 +68,30 @@ def error_message(code, format='', record='', options='', cline='', var='', var1
 
     ## Mapping file
     message = {
-        18: f'{CRED}\nError: Incosistent number of fields ({nfields_1} vs {nfields} expected) for Study Variable "{var}" and New Variable "{var1}" record -- "{record}" {CEND} (Data line {dline}, Code line {cline})\n',
-        4: f'{CRED}\nError: Wrong option "{options}" for record -- "{record}" {CEND} (Code line {cline})\n',
+        18: f'{CRED}\nError (Mapping file): Incosistent number of fields ({nfields_1} vs {nfields} expected) for Study Variable "{var}" and New Variable "{var1}" record -- "{record}" {CEND} (Data line {dline}, Code line {cline})\n',
+        4: f'{CRED}\nError (Mapping file): Wrong option "{options}" for record -- "{record}" {CEND} (Code line {cline})\n',
         ### Format
-        8: f'{CRED}\nError: Empty Variable Format "{format}" for Study Variable "{var}" and New Variable "{var1}" record -- "{record}" {CEND} (Data line {dline}, Code line {cline})\n',
-        9: f'{CRED}\nError: Duplicate Study Variable Name "{var}" for record -- "{record}" {CEND} (Code line {cline})\n',
-        1: f'{CRED}\nError: "NEW Variable Name" variable missing on Study Variable{CEND} "{var1}" {CRED}for record --{CEND} "{record}" {line}\n',
-        2: f'{CRED}\nError: "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n',
-        3: f'{CRED}\nError: "Study Variable Name" or "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n',
-        5: f'{CRED}\nError: Coding{CEND} "{var}" {CRED}not included in mapping{CEND} "{options}" {CRED}in record{CEND} "{record}" {CRED}(Code line{CEND} {cline}{CRED}){CEND}\n',
-        6: f'{CRED}\nError: Wrong Variable Format "{format}" in mapping file "{mapfile}" for record -- "{record}" {CEND} (Code line {cline})\n',
-        7: f'{CRED}\nError: Unrecognized format of mapping file "{mapfile}" {CEND} (Code line {cline})\n',
+        8: f'{CRED}\nError (Mapping file): Empty Variable Format "{format}" for Study Variable "{var}" and New Variable "{var1}" record -- "{record}" {CEND} (Data line {dline}, Code line {cline})\n',
+        9: f'{CRED}\nError (Mapping file): Duplicate Study Variable Name "{var}" for record -- "{record}" {CEND} (Code line {cline})\n',
+        1: f'{CRED}\nError (Mapping file): "NEW Variable Name" variable missing on Study Variable{CEND} "{var1}" {CRED}for record --{CEND} "{record}" {line}\n',
+        2: f'{CRED}\nError (Mapping file): "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n',
+        3: f'{CRED}\nError (Mapping file): "Study Variable Name" or "Study Variable Format" variable missing for record -- "{record}" {CEND} (Code line {cline})\n',
+        5: f'{CRED}\nError (Mapping file): Coding{CEND} "{var}" {CRED}not included in mapping{CEND} "{options}" {CRED}in record{CEND} "{record}" {CRED}(Code line{CEND} {cline}{CRED}){CEND}\n',
+        6: f'{CRED}\nError (Mapping file): Wrong Variable Format "{format}" in mapping file "{mapfile}" for record -- "{record}" {CEND} (Code line {cline})\n',
+        7: f'{CRED}\nError (Mapping file): Unrecognized format of mapping file "{mapfile}" {CEND} (Code line {cline})\n',
         
         
-        10: f'{CRED}\nError: Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n',
-        11: f'{CRED}\nError: Study Variable Name "{var}" not included "NEW to Study Mapping" field for record "{record}" {CEND} (Code line {cline})\n',
-        12: f'{CRED}\nError: Empty "Study Variable Name" for record "{record}" {CEND} (Code line {cline})\n',
-        13: f'{CRED}\nError: Empty "New to Study Mapping" for "{var}" for record "{record}" {CEND} (Code line {cline})\n',
+        10: f'{CRED}\nError (Mapping file): Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n',
+        11: f'{CRED}\nError (Mapping file): Study Variable Name "{var}" not included "NEW to Study Mapping" field for record "{record}" {CEND} (Code line {cline})\n',
+        12: f'{CRED}\nError (Mapping file): Empty "Study Variable Name" for record "{record}" {CEND} (Code line {cline})\n',
+        13: f'{CRED}\nError (Mapping file): Empty "New to Study Mapping" for "{var}" for record "{record}" {CEND} (Code line {cline})\n',
 
         ### Variable
         15: f'{CRED}\nError: Wrong Variable{CEND} "{var}" {CRED}type for record --{CEND} "{record}" {line}\n',
 
         ## No Exit
-        101: f'{CRED}\nError: Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n',
-        102: f'{CRED}\nError: Invalid "New to Study Mapping": "{var}" for record "{record}" {CEND} (Code line {cline})\n',
+        101: f'{CRED}\nError (Mapping file): Study Variable Name "{var}" not included in mapping file "{mapfile}" for record "{record}" {CEND} (Code line {cline})\n',
+        102: f'{CRED}\nError (Mapping file): Invalid "New to Study Mapping": "{var}" for record "{record}" {CEND} (Code line {cline})\n',
         ## Value
         17: f'{CRED}\nError: Invalid value "{var_value}" for variable "{var}" of type "{format}" for record "{record}" {CEND} (Code line {cline})\n',
     }
